@@ -14,7 +14,7 @@ class CreateDescriptionsTable extends Migration
     public function up()
     {
         Schema::create('descriptions', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products');
             $table->text('body');

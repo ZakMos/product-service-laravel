@@ -22,7 +22,7 @@ class ExampleTest extends TestCase
     }
     public function testBasicList()
     {
-         $this->get(route('products'))
+         $this->get(route('api.products.index'))
               ->assertResponseOk();
     }
 }
