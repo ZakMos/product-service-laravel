@@ -101,4 +101,13 @@ class ExampleTest extends TestCase
         ->seeJson(['body' => ['The body field is required.']])
         ->assertResponseStatus(422);
     }
+
+    public function testProductCreationFailsWhenNameNotUpToQuality()
+    {
+      $product = factory(\App\Product::class)->make(['name' => 'notQuality']);
+
+      $this->post(route('api.products.store'), $product->jsonSerilaize(), $this->jsonHeaders)
+          ->seeJson(['name' => ['The product name provided does not match our standerd of excellence.']])
+          ->assertResponeStatus(422);
+    }
 }
