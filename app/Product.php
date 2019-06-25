@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+  public $fillable = ['name'];
 
-
-  // public function descreptions ()
-  // {
-  //   return $this->hasMany(Description::class);
-  // }
+  public function descreptions ()
+  {
+    return $this->hasMany(Description::class);
+  }
   //
   // public function scopOfProduct($query, $productId)
   // {
@@ -19,8 +19,8 @@ class Product extends Model
   // }
 
 
-    public function product()
-    {
-      $this->belongsTo(Product::class);
-    }
+    // public function product()
+    // {
+    //   $this->belongsTo(Product::class);
+    // }
 }
