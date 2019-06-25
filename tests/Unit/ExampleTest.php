@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ExampleTest extends TestCase
 {
-    // use DatabaseTransactions;
+    use DatabaseTransactions;
     /**
      * A basic test example.
      *
@@ -18,6 +18,7 @@ class ExampleTest extends TestCase
      */
      public function testBasicTest()
      {
+        $this->assertTrue(true);
          $this->visit('/')
               ->see('Laravel 5');
     }
@@ -44,6 +45,34 @@ class ExampleTest extends TestCase
        array_map(function ($description) {
            $this->seeJson($description->jonSerilize());
        }, $product->descriptions->all());
-
     }
+
+    public function testProductCreation()
+    {
+      $product = factory(\App\Product::class)->make(['name' => 'beets']);
+
+      $this->post(route('api.products.store'), $product->jsonSerilaize(), $this->jsonHeaders)
+          ->seeInDatabase('products', ['name' => $product->name])
+          ->assertResponseOk();
+    }
+
+    public function testProductDescriptionCreation()
+    {
+      $product = factory(\App\Product::class)->make(['name' => 'beets']);
+      $description = factory(\App\Description::class)->make();
+      $this->post(route('api.products.descriptions.store', ['products' => $product->id]), $description->jsonSerilaize(), $this->jsonHeaders)
+          ->seeInDatabase('descriptions', ['body' => $description->body])
+          ->assertResponseOk();
+    }
+
+    public function testProductUpdate()
+    {
+      $product = factory(\App\Product::class)->make(['name' => 'beets']);
+      $product->name = 'feets';
+
+      $this->post(route('api.products.update', ['products' => $product->id]), $product->jsonSerilaize(), $this->jsonHeaders)
+          ->seeInDatabase('products', ['name' => $product->name])
+          ->assertResponseOk();
+    }
+
 }
