@@ -18,6 +18,9 @@ class ProductController extends Controller
 
   public function store(Request $request)
   {
+      $this->validate($request, [
+        'name' => 'required|unique:products'
+      ]);
       return Product::create([
         'name' => $request->input('name')
       ]);

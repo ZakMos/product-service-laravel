@@ -75,4 +75,30 @@ class ExampleTest extends TestCase
           ->assertResponseOk();
     }
 
+    public function testProductFailsWhenNameNotProvided()
+    {
+      $product = factory(\App\Product::class)->make(['name' => '']);
+
+      $this->post(route('api.products.store'), $product->jsonSerilaize(), $this->jsonHeaders)
+          ->seeJson(['name' => ['The name field is required']])
+          ->assertResponseStatus(422);
+    }
+
+    public function testProductFailsWhenNameNotUnique()
+    {
+      $product1 = factory(\App\Product::class)->create(['name' => 'name']);
+      $product2 = factory(\App\Product::class)->make(['name' => $name]);
+      $this->post(route('api.products.store'), $product2->jsonSerilaize(), $this->jsonHeaders)
+          ->seeJson(['name' => ['The name field is already taken.']])
+          ->assertResponseStatus(422);
+    }
+
+    public function testProductDescriptionCreationFailsWhenBodyNotProvided()
+    {
+      $product = factory(\App\Product::class)->make(['name' => 'beets']);
+      $description = factory(\App\Description::class)->make(['body' => '']);
+      $this->post(route('api.products.descriptions.store', ['products' => $product->id]), $description->jsonSerilaize(), $this->jsonHeaders)
+        ->seeJson(['body' => ['The body field is required.']])
+        ->assertResponseStatus(422);
+    }
 }
